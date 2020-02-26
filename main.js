@@ -59,7 +59,12 @@ function reduce(array, f, acc) {
 //wordLengths("hello its me") // [5,3,2]
 
 function wordLengths(str) {
-    // TODO: your code here 
+  //pushing every word of the string into an array 
+    var arr=str.split(' ')
+    //iterating through all the elements of the array and returning the length of the word
+    return map(arr, function(element, i) {
+      return element.length
+    })
 }
 
 //=============================================================================
@@ -72,7 +77,17 @@ function wordLengths(str) {
 // countOccurrences("hello, world!", "l"); // 3
 
 function countOccurrences(string, character) {
-    // your code is here
+  //pushing all the characters of the string into an array 
+  var arr=string.split('')
+  var occ=0;
+  //iterating through the elements of the array and testing
+    each(arr ,function(element, i) {
+      //if the character occured the counter will be increased by one
+      if(element===character) {
+        occ++;
+      }
+    })
+    return occ;
 }
 
 //=============================================================================
@@ -84,7 +99,12 @@ function countOccurrences(string, character) {
 // wordsLongerThanThree("Hello Mad World") //["Hello", "World"]
 
 function wordsLongerThanThree(str) {
-    // TODO: your code here 
+  //pushing everyone word of the string into an array
+  var arr=str.split(' ')
+  //iterating through the elements of the array and checking if the element.length>3 then we push it
+    return filter(arr, function(element, i) {
+      return element.length > 3;
+    }) 
 }
 
 //=============================================================================
@@ -99,7 +119,12 @@ function wordsLongerThanThree(str) {
 //repeatString('dog', 3); // => 'dog' + 'dog' + 'dog' => 'dogdogdog'
 
 function repeatString(str, count) { 
- // TODO: your code here 
+  if(count === 0) {
+    return ''
+  }
+  else if(count > 0){
+    return str+repeatString(str, count-1)
+  }
 } 
  
 
@@ -118,7 +143,7 @@ function repeatString(str, count) {
  eatSlice a function that let you eat from the pizza as long as the numberOfSlice is greater than zero and decrease the total number of slices by one.
  */
 //Example:
-// var pizza = makePizza("thin", "M", 2);
+var pizza = makePizza("thin", "M", 2);
 // pizza.addIngredients("tomato");
 // pizza.addIngredients("meshroom");
 // pizza.addIngredients("meat");
@@ -128,8 +153,59 @@ function repeatString(str, count) {
 // pizza.eatSlice();
 // pizza.eatSlice();
 
-// Write your code here .....
-
+function makePizza(crust, size, numberOfSlice) {
+  var ingredients=[]
+  //return an object with the parameters i gave as values for the keys
+  return {
+    crust: crust,
+    size: size,
+    numberOfSlice: numberOfSlice,
+    ingredients: ingredients,
+    //function that adds ingredients to the ingredients array
+    addIngredients: function(ingredient) {
+      var t=0;
+      //iterating through all the ingredients in the ingredients array 
+      for(var i=0; i<ingredients.length; i++){
+        //to check if the ingredient doesn't exist we add 1 to our counter t
+        if (ingredient!==ingredients[i]){
+          t++;
+        }
+      }
+      //if our ocunter === ingredients.length which means he is different from all the ingredients
+      if(t===ingredients.length){
+        // we add it
+        ingredients.push(ingredient)
+      }else{
+        console.log('Ingredient already exists')
+      }
+    },
+    //function that displays ingredients 
+    displayIngredients: function() {
+      console.log(ingredients.join(','))
+    },
+    //function that displays infos about your pizza and informs you that it's ready after time
+    bakePizza: function() {
+      setTimeout(function() {
+        console.log('Your '+crust+' '+size+' '+numberOfSlice+' slices Pizza is done')
+      },3500)
+    },
+    //function that reduces number of slice 
+    eatSlice: function() {
+      //if you have slices it will reduce
+      if(numberOfSlice>0) {
+        numberOfSlice--;
+        if(numberOfSlice===1){
+          console.log('Remains only 1 slice.')
+        }else{
+          console.log('Remains '+numberOfSlice+' slices.')
+        }
+        //else it won't reduce 
+      }else{
+        console.log('You no longer have slices.')
+      }
+    }
+  }
+}
 //=============================================================================
 /*                                  Q6                                      */
 //=============================================================================
@@ -153,9 +229,28 @@ d- Decrement the number of "unread" books
 */
 
 // Now, to make sure that you are actually reading, make a comment below this and type: Yes I am
-
-// Write your code here .....
-
+//yes i am
+function Book(read, unRead, toRead, currentRead, readBooks) {
+  return {
+    read: read,
+    unRead: unRead,
+    toRead: toRead,
+    currentRead: currentRead,
+    readBooks: readBooks,
+    AddBook: addBook,
+    finishCurrentBook: finishCurrentBook,
+  }
+}
+function finishCurrentBook() {
+  this.readBooks.push(this.currentRead);
+  this.read+=1;
+  this.currentRead=this.toRead[0];
+  this.unRead-=1;
+}
+function addBook(name) {
+  this.toRead.push(name);
+  this.unRead+=1;
+}
 //=============================================================================
 /*                                  Q7                                       */
 //=============================================================================
@@ -168,13 +263,52 @@ d- Decrement the number of "unread" books
 //return "Can't fit" if you try to add an item that exceeds the storage size limit
 //when the safe is full return a string representing all the items that are in the safe
 //Example:
-//  var safe = makeSafe(5)
+var safe = makeSafe(5)
 //  safe('watch','small')
 //  safe('gold-bar','big')
 //  safe('silver-bar','big') => "Can't fit"
 //  safe('money','small') => "watch gold-bar money"
 
-// Write your code here .....
+function makeSafe(sizeLimit) {
+  var items=[];
+  return {
+    slotsAvai:sizeLimit,
+    items:items,
+    addItem: function(item, itemSize) {
+      if(!['BIG','MEDIUM','SMALL'].includes(itemSize.toUpperCase())){
+        alert('The item size should be either "BIG", "MEDIUM" or "SMALL"')
+      }
+      if(itemSize.toUpperCase()==='BIG'){
+        var slots=3;
+        if(slots>this.slotsAvai){
+          alert("Can't Fit!")
+        }else{
+          this.slotsAvai=this.slotsAvai-slots;
+          items.push(item)
+        }
+      }else if(itemSize.toUpperCase()==='MEDIUM'){
+        var slots=2;
+        if(slots>this.slotsAvai){
+          alert("Can't Fit!")
+        }else{
+          this.slotsAvai=this.slotsAvai-slots;
+          items.push(item)
+        }
+      }else{
+        var slots=1;
+        if(slots>this.slotsAvai){
+          alert("Can't Fit!")
+        }else{
+          this.slotsAvai=this.slotsAvai-slots;
+          items.push(item)
+        }
+      }
+      if(this.slotsAvai===0){
+        console.log(items.join(' '))
+      }
+    }
+  }
+}
 
 //=============================================================================
 /*                                  Q8                                       */
@@ -216,13 +350,13 @@ d- Decrement the number of "unread" books
 //================================================================================
 // Theoretical questions.
 // 1- In your own words,Why do we use Closures ?
-
+//we use closures to create multiple objects using the same function and quickly.
 // 2- In OOP, what does "this" refer to ?
-
+//this refers to the object that has that key.
 // 3- What is jQuery?
-
+//jQuery is a javascript library which allows us to control and change HTML and CSS using javascript
 // 4- what is the diffrence between Closure's methods and The OOP's methods?
-
+//Closure's methods are declared inside of the object but OOP's methods are declared in the global scope
 
 
 
